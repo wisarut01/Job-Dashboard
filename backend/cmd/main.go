@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v3/middleware/cors"
 	"github.com/job_dashboard_backend/internal/config"
 	"github.com/job_dashboard_backend/internal/handlers"
 	"github.com/job_dashboard_backend/internal/middleware"
@@ -53,24 +54,59 @@ func main() {
 
 	//init handler service repository in each table
 	//Users
-	userRepo := repositorys.NewUserRepository(database)
+	userRepo 	:= repositorys.NewUserRepository(database)
 	userService := services.NewUserService(userRepo)
 	userHandler := handlers.NewUserHandler(userService)
+
 	//Jobs
 
 	//Companies
+	companiesRepo 		:= repositorys.NewCompaniesRepository(database)
+	companiesService	:= services.NewCompaniesService(companiesRepo, userRepo)
+	companiesHandler 	:= handlers.NewCompanyHandlers(*companiesService)
 
 	//Applications
 
 	//Auth
 	authService := services.NewAuthService(userRepo)
-	authHandler := handlers.NewAuthHandler(authService)
+	authHandler := handlers.NewAuthHandler(authService, configParam.SECRET_KEY)
 
+	//publish API 
 	app.Post("/register", authHandler.Register)
+	app.Post("/login", authHandler.Login)
+
+	//Companies
+	app.Get("/companies", companiesHandler.GetAllCompaniesHandler)
+	app.Get("/companies/:id", companiesHandler.GetCompanyByIdHandler)
+
+	//Jobs
+
+	//Application
 	
+	//protected API
 	//middleware
-	app.Use()
-	app.Get("/user/:id", userHandler.GetUserHandler)
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:5173"},
+		AllowCredentials: true,
+		AllowHeaders: []string{"Origin", "Content-Type", "Accept"},
+	}))
+
+	appProtected := app.Use("/", middleware.JWTVerify)
+
+	appProtected.Post("/logout", authHandler.Logout)
+
+	//Companies
+	appProtected.Post("/companies", middleware.RequireRole, companiesHandler.CreateCompanyHandler)
+	appProtected.Patch("/companies/:id", middleware.RequireRole, companiesHandler.UpdateCompanyHandler)
+	appProtected.Delete("/companies/:id", middleware.RequireRole, companiesHandler.DeleteCompanyHandler)
+
+	//Users
+	appProtected.Get("/profile", userHandler.GetUserHandler)
+
+	//Jobs
+
+	//Applications
+
 	if err := app.Listen(":" + configParam.APP_PORT); err != nil {
 		log.Fatal("Error to listen: ", err.Error())
 	}

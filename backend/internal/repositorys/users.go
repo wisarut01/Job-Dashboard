@@ -23,8 +23,22 @@ func (r *UserRepository) GetUserRepository(id uint) (*models.Users, error) {
 	userData := &models.Users{}
 
 	if err := r.database.Where("id = ?", id).First(userData).Error; err != nil {
-		return &models.Users{}, err
+		return nil, err
 	}
 
 	return userData, nil
+}
+
+func (r *UserRepository) GetUserByEmailRepository(email string) (*models.Users, error) {
+	userData := &models.Users{}
+
+	if err := r.database.Where("email = ?", email).First(userData).Error; err != nil {
+		return nil, err
+	}
+
+	return userData, nil
+}
+
+func (r *UserRepository) UpdatedCompanyIdRepository(id uint, company_id uint) error {
+	return r.database.Model(&models.Users{}).Where("id = ?", id).Update("company_id", company_id).Error
 }

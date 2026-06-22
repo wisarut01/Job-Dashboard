@@ -16,7 +16,7 @@ func NewAuthService(userRepo *repositorys.UserRepository) *AuthService {
 	}
 }
 
-func (s *AuthService) Register(name, email, password string, role models.RoleType) error {
+func (s *AuthService) RegisterService(name, email, password string, role models.RoleType) error {
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
@@ -30,4 +30,8 @@ func (s *AuthService) Register(name, email, password string, role models.RoleTyp
 	}
 
 	return s.userRepo.CreateUserRepository(user)
+}
+
+func (s *AuthService) GetUserByEmailService(email string) (*models.Users, error) {
+	return s.userRepo.GetUserByEmailRepository(email)
 }

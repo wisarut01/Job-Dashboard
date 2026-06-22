@@ -23,3 +23,4 @@ func (s *UserService) GetUserService(id uint) (*models.Users, error) {
 
 	return userData, nil
 }
+

@@ -12,6 +12,7 @@ type ConfigVariable struct {
 	DB_PASSWORD string
 	DB_NAME		string
 	DB_SSLMODE  string
+	SECRET_KEY	string
 }
 
 func Config() *ConfigVariable {
@@ -28,5 +29,6 @@ func Config() *ConfigVariable {
 		DB_PASSWORD: os.Getenv("DB_PASSWORD"),
 		DB_NAME: os.Getenv("DB_NAME"),
 		DB_SSLMODE: os.Getenv("DB_SSLMODE"),
+		SECRET_KEY: os.Getenv("SECRET_KEY"),
 	}
 }

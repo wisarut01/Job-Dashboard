@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/job_dashboard_backend/internal/services"
@@ -18,12 +17,7 @@ func NewUserHandler(service *services.UserService) *UserHandler {
 } 
 
 func (h *UserHandler) GetUserHandler(ctx fiber.Ctx) error {
-	id, err := strconv.Atoi(ctx.Params("id"))
-	if err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid id",
-		})
-	}
+	id := ctx.Locals("id").(uint)
 
 	userData, err := h.service.GetUserService(uint(id))
 	if err != nil {
