@@ -69,6 +69,9 @@ func main() {
 	companiesHandler 	:= handlers.NewCompanyHandlers(*companiesService)
 
 	//Applications
+	appRepo := repositorys.NewApplicationRepository(database)
+	appService := services.NewApplicationService(appRepo, userRepo, jobRepo)
+	appHandler := handlers.NewApplicationHandler(appService)
 
 	//Auth
 	authService := services.NewAuthService(userRepo)
@@ -85,8 +88,6 @@ func main() {
 	//Jobs
 	app.Get("/jobs", jobHandler.GetAllJobsHandler)
 	app.Get("/jobs/:id", jobHandler.GetJobByIDHandler)
-
-	//Application
 	
 	//protected API
 	//middleware
@@ -117,6 +118,10 @@ func main() {
 	appProtected.Delete("/jobs/:id", jobHandler.CloseJobHandler)
 
 	//Applications
+	appProtected.Get("/applications", appHandler.GetApplicationsHandler)
+	appProtected.Get("/applications/:id", appHandler.GetApplicationByIDHandler)
+	appProtected.Post("/applications", appHandler.CreateApplicationHandler)
+	appProtected.Delete("/applications/:id", appHandler.DeleteApplicationHandler)
 
 	if err := app.Listen(":" + configParam.APP_PORT); err != nil {
 		log.Fatal("Error to listen: ", err.Error())

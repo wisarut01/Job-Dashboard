@@ -66,3 +66,13 @@ func (r *JobRepository) UpdateJobRepository(jobId uint, title string, descriptio
 func (r *JobRepository) CloseJobRepository(jobId uint) error {
 	return r.database.Delete(&models.Jobs{}, jobId).Error
 }
+
+func (r *JobRepository) GetJobByCompanyIDRepository(companyID uint) ([]models.Jobs, error) {
+	jobs := []models.Jobs{}
+
+	if err := r.database.Where("company_id = ?", companyID).Find(&jobs).Error; err != nil {
+		return nil, err
+	}
+
+	return jobs, nil
+}
