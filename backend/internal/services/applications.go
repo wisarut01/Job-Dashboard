@@ -66,13 +66,11 @@ func (s *ApplicationService) CreateApplicationService(userID uint, jobID uint) e
         return errors.New("only jobseekers can apply")
     }
 
-    job, err := s.jobRepo.GetJobByIDRepository(jobID)
-    if err != nil {
-        return errors.New("job not found")
-    }
-    _ = job 
+    _, err = s.jobRepo.GetJobByIDRepository(jobID)
+	if err != nil {
+		return errors.New("job not found")
+	}	
 
-    existing := []models.Applications{}
     app := &models.Applications{
         UserId: userID,
         JobId:  jobID,
