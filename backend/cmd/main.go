@@ -59,6 +59,9 @@ func main() {
 	userHandler := handlers.NewUserHandler(userService)
 
 	//Jobs
+	jobRepo := repositorys.NewJobRepository(database)
+	jobService := services.NewJobService(jobRepo, userRepo)
+	jobHandler := handlers.NewJobsHandler(jobService)
 
 	//Companies
 	companiesRepo 		:= repositorys.NewCompaniesRepository(database)
@@ -80,6 +83,8 @@ func main() {
 	app.Get("/companies/:id", companiesHandler.GetCompanyByIdHandler)
 
 	//Jobs
+	app.Get("/jobs", jobHandler.GetAllJobsHandler)
+	app.Get("/jobs/:id", jobHandler.GetJobByIDHandler)
 
 	//Application
 	
@@ -102,8 +107,14 @@ func main() {
 
 	//Users
 	appProtected.Get("/profile", userHandler.GetUserHandler)
+	appProtected.Patch("/users", userHandler.UpdatedUserHandler)
+	appProtected.Patch("/users/password", userHandler.UpdatedUserPasswordHandler)
+	appProtected.Delete("/users", userHandler.DeletedUserHandler)
 
 	//Jobs
+	appProtected.Post("/jobs", jobHandler.CreateJobHandler)
+	appProtected.Patch("/jobs/:id", jobHandler.UpdateJobHandler)
+	appProtected.Delete("/jobs/:id", jobHandler.CloseJobHandler)
 
 	//Applications
 
