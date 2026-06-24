@@ -51,6 +51,11 @@ func main() {
 
 	//create fiber app 
 	app := fiber.New()
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: []string{"http://localhost:5173"},
+		AllowCredentials: true,
+		AllowHeaders: []string{"Origin", "Content-Type", "Accept"},
+	}))
 
 	//init handler service repository in each table
 	//Users
@@ -91,12 +96,6 @@ func main() {
 	
 	//protected API
 	//middleware
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:5173"},
-		AllowCredentials: true,
-		AllowHeaders: []string{"Origin", "Content-Type", "Accept"},
-	}))
-
 	appProtected := app.Use("/", middleware.JWTVerify)
 
 	appProtected.Post("/logout", authHandler.Logout)
@@ -113,9 +112,9 @@ func main() {
 	appProtected.Delete("/users", userHandler.DeletedUserHandler)
 
 	//Jobs
-	appProtected.Post("/jobs", jobHandler.CreateJobHandler)
-	appProtected.Patch("/jobs/:id", jobHandler.UpdateJobHandler)
-	appProtected.Delete("/jobs/:id", jobHandler.CloseJobHandler)
+	appProtected.Post("/jobs", middleware.RequireRole, jobHandler.CreateJobHandler)
+	appProtected.Patch("/jobs/:id", middleware.RequireRole, jobHandler.UpdateJobHandler)
+	appProtected.Delete("/jobs/:id", middleware.RequireRole, jobHandler.CloseJobHandler)
 
 	//Applications
 	appProtected.Get("/applications", appHandler.GetApplicationsHandler)
