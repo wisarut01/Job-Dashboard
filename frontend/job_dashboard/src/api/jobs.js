@@ -1,6 +1,6 @@
 import apiFetch from "./client";
 
-export function GetJobs() {
+export function getJobs() {
     return apiFetch(
         "/jobs",
         {
@@ -9,15 +9,15 @@ export function GetJobs() {
     )
 }
 
-export function GetJob(id) {
-    return apiFetch("/jobs/${id}", 
+export function getJob(id) {
+    return apiFetch(`/jobs/${id}`, 
         {
             method: "GET"
         }
     )
 }
 
-export function CreateJob(data) {
+export function createJob(data) {
     return apiFetch("/jobs", 
         {
             method: "POST",
@@ -26,8 +26,8 @@ export function CreateJob(data) {
     )
 }
 
-export function UpdateJob(id, data) {
-    return apiFetch("/jobs/${id}", 
+export function updateJob(id, data) {
+    return apiFetch(`/jobs/${id}`, 
         {
             method: "PATCH",
             body: JSON.stringify(data)
@@ -35,8 +35,8 @@ export function UpdateJob(id, data) {
     )
 }
 
-export function CloseJob(id) {
-    return apiFetch("/jobs/${id}", 
+export function closeJob(id) {
+    return apiFetch(`/jobs/${id}`, 
         {
             method: "DELETE"
         }

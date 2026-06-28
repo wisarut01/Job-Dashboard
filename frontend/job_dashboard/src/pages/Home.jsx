@@ -53,13 +53,14 @@ export default function Home() {
 
     useEffect(() => {
         async function fetchJobs() {
-            const data = await GetJobs()
-            if (data instanceof Error) {
-                setError(data.message)
-            } else {
+            try {
+                const data = await getJobs()
                 setJobs(data.jobs ?? data)
+            } catch (err) {
+                setError(err.message)
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
         }
         fetchJobs()
     }, [])
