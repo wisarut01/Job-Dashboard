@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./pages/Home";
 // import page
 
 export default function App() {
@@ -8,7 +9,7 @@ export default function App() {
     <>
       <Navbar />
       <Routes>
-        <Route path="/" />
+        <Route path="/" element= {<Home />}/>
         <Route path="/jobs/:id" />
         <Route path="/login" /> 
         <Route path="/register" />
