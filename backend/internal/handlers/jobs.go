@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/job_dashboard_backend/internal/models"
 	"github.com/job_dashboard_backend/internal/services"
 )
 

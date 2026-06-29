@@ -16,7 +16,7 @@ type ConfigVariable struct {
 }
 
 func Config() *ConfigVariable {
-	app_port := os.Getenv("APP_PORT")
+	app_port := os.Getenv("PORT")
 	if app_port == "" {
 		app_port = "8000"
 	}
